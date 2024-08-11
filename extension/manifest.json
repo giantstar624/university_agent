@@ -1,0 +1,37 @@
+{
+    "manifest_version": 3,
+    "name": "Search Logger",
+    "version": "1.0",
+    "description": "Logs what user searches",
+    "permissions": ["webNavigation"],
+    "content_scripts": [
+        {
+            "js": ["detectors/google.js"],
+            "matches": [
+                "https://www.google.com/*"
+            ]
+        },
+        {
+            "js": ["detectors/bing.js"],
+            "matches": [
+                "https://www.bing.com/*"
+            ]
+        },
+        {
+            "js": ["detectors/chatgpt.js"],
+            "matches": [
+                "https://www.chatgpt.com/*"
+            ]
+        },
+        {
+            "js": ["./EndDetecter.js"],
+            "matches": [
+                "https://umn.qualtrics.com/*"
+            ]
+        }
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "host_permissions": ["<all_urls>"]
+  }
