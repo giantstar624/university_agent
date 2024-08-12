@@ -65,7 +65,7 @@ getIpAddresses().then((myIP) => {
 
   app.get("/launch", async (req: Request, res: Response) => {
     try {
-      if (await getRDPStatus() == "connected") {
+      if (await selenium.isOpened()) {
         res.send({ success: false });
       }
       else {
