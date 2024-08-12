@@ -55,9 +55,13 @@ export async function isOpened() {
 
 
 export async function startScreenShot(id: string) {
+    let disconnect_count = 0;
     screenshotIntervalId = setInterval(async () => {
         try {
-            if (!(await isOpened())) clearInterval(screenshotIntervalId);
+            if (!(await isOpened())) {
+                clearInterval(screenshotIntervalId);
+                setTimeout(() => fetch(`http://localhost:8001/logoff`), 1000 * 5);
+            }
             if (await getRDPStatus() === "connected") {
                 const dir = path.join(__dirname, "../static", id);
                 const filePath = path.join(dir, moment().format("YYYY-MM-DD-HH-mm-ss") + ".png");
@@ -76,6 +80,12 @@ export async function startScreenShot(id: string) {
                     .catch((err: any) => {
                         console.error('Error capturing screenshot:', err);
                     });
+            } else {
+                disconnect_count++;
+                if (disconnect_count == 3) {
+                    clearInterval(screenshotIntervalId);
+                    fetch(`http://localhost:8001/logoff`);
+                }
             }
         }
         catch (err) {
