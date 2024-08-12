@@ -109,9 +109,10 @@ getIpAddresses().then((myIP) => {
   });
 
   app.get("/status", async (req: Request, res: Response) => {
-    const status = await getRDPStatus();
-    console.log(status);
-    res.send(status);
+    res.send(selenium.isOpened());
+    // const status = await getRDPStatus();
+    // console.log(status);
+    // res.send(status);
   })
 
   app.get("/logoff", (req: Request, res: Response) => {
