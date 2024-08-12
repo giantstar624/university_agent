@@ -15,6 +15,7 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "@types/screenshot-desktop": "^1.12.3",
     "axios": "^1.7.3",
     "cors": "^2.8.5",
