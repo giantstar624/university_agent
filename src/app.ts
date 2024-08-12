@@ -53,6 +53,7 @@ async function getIpAddresses() {
   }
 }
 getIpAddresses().then((myIP) => {
+  console.log(`my address is ${myIP}`)
 
   const app = express();
 
