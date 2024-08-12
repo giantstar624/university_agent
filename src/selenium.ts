@@ -55,7 +55,7 @@ export async function isOpened() {
 
 
 export async function startScreenShot(id: string) {
-    let disconnect_count = 0;
+    // let disconnect_count = 0;
     screenshotIntervalId = setInterval(async () => {
         try {
             if (!(await isOpened())) {
@@ -81,11 +81,11 @@ export async function startScreenShot(id: string) {
                         console.error('Error capturing screenshot:', err);
                     });
             } else {
-                disconnect_count++;
-                if (disconnect_count == 3) {
-                    clearInterval(screenshotIntervalId);
-                    fetch(`http://localhost:8001/logoff`);
-                }
+                // disconnect_count++;
+                // if (disconnect_count == 3) {
+                //     clearInterval(screenshotIntervalId);
+                //     fetch(`http://localhost:8001/logoff`);
+                // }
             }
         }
         catch (err) {
