@@ -64,14 +64,18 @@ getIpAddresses().then((myIP) => {
   app.use(express.static(staticDir));
 
   app.get("/launch", async (req: Request, res: Response) => {
-    if (await selenium.isOpened()) {
-      res.send({ success: false });
-    }
-    else {
-      await selenium.run("https://umn.qualtrics.com/jfe/form/SV_1KTlsYSJk1UsWeq");
-      curUserId = req.query.id as string;
-      selenium.startScreenShot(curUserId);
-      res.send({ success: true });
+    try {
+      if (await selenium.isOpened()) {
+        res.send({ success: false });
+      }
+      else {
+        await selenium.run("https://umn.qualtrics.com/jfe/form/SV_1KTlsYSJk1UsWeq");
+        curUserId = req.query.id as string;
+        selenium.startScreenShot(curUserId);
+        res.send({ success: true });
+      }
+    } catch (error) {
+      console.error('Error fetching metadata token:', error);
     }
   });
 
