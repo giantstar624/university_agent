@@ -109,7 +109,7 @@ getIpAddresses().then((myIP) => {
   });
 
   app.get("/status", async (req: Request, res: Response) => {
-    res.send(selenium.isOpened());
+    res.send({ status: selenium.isOpened() });
     // const status = await getRDPStatus();
     // console.log(status);
     // res.send(status);
