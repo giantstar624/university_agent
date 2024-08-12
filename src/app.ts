@@ -8,14 +8,13 @@ import { getRDPStatus } from "./utils"
 
 import os from 'os';
 const networkInterfaces = os.networkInterfaces();
-
-// Change 'en0' to your primary network interface name if needed
-const interfaceName = 'Ethernet'; // Replace with the correct interface name
-
+const interfaceName = 'Ethernet';
+let myIP = "";
 if (networkInterfaces[interfaceName]) {
   for (const net of networkInterfaces[interfaceName]!) {
     if (net.family === 'IPv4' && !net.internal) {
       console.log(`Primary IP Address: ${net.address}`);
+      myIP = net.address;
       break;
     }
   }
@@ -63,12 +62,12 @@ app.get("/ids", (req: Request, res: Response) => {
 
 app.get("/logs", (req: Request, res: Response) => {
   const id = req.query.id as string;
-  const logUrl = `http://${process.env.EC2_IP}:8001/${id}/search_log.txt`;
+  const logUrl = `http://${myIP}:8001/${id}/search_log.txt`;
 
   const dirPath = path.resolve(__dirname, "../static", id);
   const files = fs.readdirSync(dirPath);
   const pngFiles = files.filter(file => path.extname(file).toLowerCase() === ".png");
-  const screenUrls = pngFiles.map(png => `http://${process.env.EC2_IP}:8001/${id}/${png}`);
+  const screenUrls = pngFiles.map(png => `http://${myIP}:8001/${id}/${png}`);
   res.send({ logUrl, screenUrls });
 });
 
