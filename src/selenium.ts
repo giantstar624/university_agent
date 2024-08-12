@@ -77,6 +77,9 @@ export async function startScreenShot(id: string) {
                         console.error('Error capturing screenshot:', err);
                     });
             }
+            else {
+                exit();
+            }
         }
         catch (err) {
             console.log("Error occured during screenshot");
