@@ -33,13 +33,13 @@ app.use(express.static(staticDir));
 
 app.get("/launch", async (req: Request, res: Response) => {
   if (await selenium.isOpened()) {
-    res.send("The other is participating the study. Wait");
+    res.send({ success: false });
   }
   else {
     await selenium.run("https://umn.qualtrics.com/jfe/form/SV_1KTlsYSJk1UsWeq");
     curUserId = req.query.id as string;
     selenium.startScreenShot(curUserId);
-    res.send("ok");
+    res.send({ success: true });
   }
 });
 
