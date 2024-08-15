@@ -65,15 +65,12 @@ getIpAddresses().then((myIP) => {
 
   app.get("/launch", async (req: Request, res: Response) => {
     try {
-      if (await selenium.isOpened()) {
-        res.send({ success: false });
-      }
-      else {
-        await selenium.run("https://umn.qualtrics.com/jfe/form/SV_1KTlsYSJk1UsWeq");
-        curUserId = req.query.id as string;
-        selenium.startScreenShot(curUserId);
-        res.send({ success: true });
-      }
+      if (await selenium.isOpened())
+        await selenium.exit();
+      await selenium.run("https://umn.qualtrics.com/jfe/form/SV_1KTlsYSJk1UsWeq");
+      curUserId = req.query.id as string;
+      selenium.startScreenShot(curUserId);
+      res.send({ success: true });
     } catch (error) {
       console.error('Error fetching metadata token:', error);
     }
@@ -109,10 +106,10 @@ getIpAddresses().then((myIP) => {
   });
 
   app.get("/status", async (req: Request, res: Response) => {
-    res.send({ status: await selenium.isOpened() });
-    // const status = await getRDPStatus();
-    // console.log(status);
-    // res.send(status);
+    // res.send({ status: await selenium.isOpened() });
+    const status = await getRDPStatus();
+    console.log(status);
+    res.send(status);
   })
 
   app.get("/logoff", (req: Request, res: Response) => {
