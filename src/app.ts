@@ -3,11 +3,19 @@ import * as selenium from "./selenium"
 import fs from "fs"
 import path from "path"
 import cors from "cors"
-import { exec } from "child_process"
+import { exec, spawn } from "child_process"
 import axios from 'axios';
 import { getRDPStatus } from "./utils"
+import { config } from "dotenv"
+
+config();
+
+const BACKEND_URL = process.env.SERVER_BACKEND_URL;
+
 const METADATA_URL = 'http://169.254.169.254/latest/meta-data';
 const TOKEN_URL = 'http://169.254.169.254/latest/api/token';
+
+let startTime: Date;
 
 // Function to get the metadata service token
 async function getToken(): Promise<string> {
@@ -69,8 +77,11 @@ getIpAddresses().then((myIP) => {
         await selenium.exit();
       await selenium.run("https://umn.qualtrics.com/jfe/form/SV_1KTlsYSJk1UsWeq");
       curUserId = req.query.id as string;
-      await selenium.startScreenShot(curUserId);
+      selenium.startScreenShot(curUserId);
       res.send({ success: true });
+
+      startTime = new Date();
+      spawn('python', [path.join(__dirname, "./noinput_detector.py")]);
     } catch (error) {
       console.error('Error fetching metadata token:', error);
     }
@@ -108,14 +119,19 @@ getIpAddresses().then((myIP) => {
   app.get("/status", async (req: Request, res: Response) => {
     // res.send({ status: await selenium.isOpened() });
     const status = await getRDPStatus();
-    console.log(status);
     res.send(status);
+  });
+
+  app.get("/end", async (req: Request, res: Response) => {
+    const endTime: Date = new Date();
+    const duration = endTime.getTime() - startTime.getTime();
+
+    axios.get(`${BACKEND_URL}/end`, { params: { duration, startTime, endTime } });
   })
 
-  app.get("/logoff", async (req: Request, res: Response) => {
+  app.get("/logoff", (req: Request, res: Response) => {
     exec("logoff rdp-tcp");
-    await selenium.exit();
-    await fetch(`http://3.225.220.51:8001/logoff?ip=${myIP}`);
+    selenium.exit();
     res.send("Awesome");
   })
 
